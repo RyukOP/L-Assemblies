@@ -1,6 +1,5 @@
 TC Crew
 ============
-<br>
-About<hr>
+About
 ============
 test
