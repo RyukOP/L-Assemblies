@@ -1,5 +1,3 @@
-TC Crew
-============
 About
 ============
 This is the <b>official</b> TC crew Organization.
