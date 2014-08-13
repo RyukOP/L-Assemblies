@@ -16,3 +16,4 @@ Assemblies
 <br><b>Katarina v. 2.0:</b> (Advanced combo, harass, farming, killsteal, drawing)
 <br><b>Cassiopeia v. 0.1:</b> (Simple combo, drawing)
 <br><b>Evelynn v. 1.0:</b> (Advanced combo, farming, drawing)
+<br><b>Annie v. 1.0:</b> (Advanced combo supporting flash, harass, drawing)
