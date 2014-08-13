@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 /*
  * Credits to:
@@ -109,7 +109,7 @@ namespace Annie
                 Config.AddToMainMenu();
 
                 //Add the events we are going to use:
-                Drawing.OnDraw += OnDraw;
+                //Drawing.OnDraw += OnDraw;
                 Game.OnGameUpdate += OnGameUpdate;
                 GameObject.OnCreate += OnCreateObject;
 
@@ -216,17 +216,12 @@ namespace Annie
                         });
                     break;
                 case 4:
-                    Console.WriteLine("0");
                     if (flash != null && flash.State == SpellState.Ready &&
                         R.IsReady() && target == null)
                     {
-                        //Console.WriteLine("1a");
-                        //Console.WriteLine((ObjectManager.Player.Distance(FlashRtarger).ToString()));
-                        Console.WriteLine(Config.Item("flashCombo").GetValue<Slider>().Value.ToString() + GetEnemiesInRange(R1.GetPrediction(FlashRtarger, true).CastPosition, 250));
                         var position = R1.GetPrediction(FlashRtarger, true).CastPosition;
                         if (ObjectManager.Player.Distance(FlashRtarger) > 600 && GetEnemiesInRange(position, 250) >= Config.Item("flashCombo").GetValue<Slider>().Value)
                         {
-                            Console.WriteLine("1aa");
                             ObjectManager.Player.SummonerSpellbook.CastSpell(flash.Slot, position);
                             R.Cast(FlashRtarger, false, true);
                             if (W.IsReady())
@@ -236,7 +231,6 @@ namespace Annie
                     }
                     else
                     {
-                        Console.WriteLine("2");
                         if (R.IsReady() && !(DamageLib.getDmg(target, DamageLib.SpellType.R) * 0.6 > target.Health))
                             R.Cast(target, false, true);
                         if (W.IsReady())
