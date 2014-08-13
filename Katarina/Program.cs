@@ -45,7 +45,7 @@ namespace Katarina
             R = new Spell(SpellSlot.R, 500);
 
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
-            DFG = Utility.Map.GetMap() == Utility.Map.MapType.TwistedTreeline ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
+            DFG = Utility.Map.GetMap() == Utility.Map.MapType.TwistedTreeline || Utility.Map.GetMap() == Utility.Map.MapType.CrystalScar ? new Items.Item(3188, 750) : new Items.Item(3128, 750);
 
             SpellList.Add(Q);
             SpellList.Add(W);
@@ -108,7 +108,6 @@ namespace Katarina
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnGameUpdate += Game_OnGameUpdate;
-
             Game.PrintChat(ChampionName + " Combo enabled!");
         }
 
