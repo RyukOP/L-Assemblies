@@ -12,6 +12,7 @@ Our current members are: Pqmailer, Esk0r/K0rtatu, andreluis034, iMeh.
 <br><b>iMeh:</b> https://github.com/ehmehe/
 Assemblies
 ============
-<b>Cho'Gath v. 1.1:</b> (Simple combo, drawings and some additional features)
-<br><b>Katarina v. 2.0:</b> (Advanced combo, harass, killsteal, drawings)
-<br><b>Cassiopeia v. 0.1:</b> (Simple combo, drawings)
+<b>Cho'Gath v. 1.1:</b> (Simple combo, drawing and some additional features)
+<br><b>Katarina v. 2.0:</b> (Advanced combo, harass, farming, killsteal, drawing)
+<br><b>Cassiopeia v. 0.1:</b> (Simple combo, drawing)
+<br><b>Evelynn v. 1.0:</b> (Advanced combo, farming, drawing)
