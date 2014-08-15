@@ -176,8 +176,8 @@ namespace Annie
                     }
                     else if (W.IsReady())
                         DoingCombo = true;
-                    W.Cast(target, false, true); //stack only goes up after 650 secs
-                    Utility.DelayAction.Add(650 - 100 - Game.Ping, ()=>
+                        W.Cast(target, false, true); //stack only goes up after 650 secs
+                        Utility.DelayAction.Add(650 - 100 - Game.Ping/2, ()=>
                         {
                             if (R.IsReady() && !(DamageLib.getDmg(target, DamageLib.SpellType.R) * 0.6 > target.Health))
                                 R.Cast(target, false, true);
@@ -210,7 +210,6 @@ namespace Annie
                         W.Cast(target, false, true);
                     break;
             }
-
             if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) < 600 && DamageLib.getDmg(target, DamageLib.SpellType.IGNITE) > target.Health)
                 ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
             Orbwalker.SetAttacks(true);
