@@ -26,6 +26,8 @@ namespace Darius
             if (ObjectManager.Player.ChampionName != ChampionName)
                 return;
 
+           Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+
             try
             {
                 Q = new Spell(SpellSlot.Q, 425);
@@ -133,7 +135,7 @@ namespace Darius
                 CastR(champion);
         }
 
-        private void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
+        static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
         {
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active && Config.Item("UseWCombo").GetValue<bool>() && unit.IsMe && (target is Obj_AI_Hero))
                 W.Cast();

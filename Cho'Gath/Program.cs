@@ -92,8 +92,6 @@ namespace Cho_Gath
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            Console.Write(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo);
-            Game.PrintChat(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo.ToString());
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active)
                 ExecuteCombo();
 
