@@ -146,6 +146,7 @@ namespace Cho_Gath
 
         private static void ExecuteKillsteal()
         {
+            //test
             foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValidTarget(Q.Range)))
             {
                 if (R.IsReady() && hero.Distance(ObjectManager.Player) <= R.Range &&
