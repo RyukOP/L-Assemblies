@@ -17,3 +17,4 @@ Assemblies
 <br><b>Cassiopeia v. 0.1:</b> (Simple combo, drawing)
 <br><b>Evelynn v. 1.0:</b> (Advanced combo, farming, drawing)
 <br><b>Annie v. 1.0:</b> (Advanced combo supporting flash, harass, drawing)
+<br><b>Darius v. 1.0:</b> (Simple combo with advanced ult logic)
