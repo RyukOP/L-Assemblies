@@ -5,8 +5,6 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
-//Credits: iMeh, Pqmailer, Kortatu
-
 namespace Cho_Gath
 {
     internal class Program
@@ -83,7 +81,7 @@ namespace Cho_Gath
         {
             if (SpellList == null) return;
 
-            foreach (Spell spell in SpellList)
+            foreach (var spell in SpellList)
             {
                 var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
 
@@ -94,6 +92,8 @@ namespace Cho_Gath
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            Console.Write(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo);
+            Game.PrintChat(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.R).Ammo.ToString());
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active)
                 ExecuteCombo();
 
@@ -114,17 +114,22 @@ namespace Cho_Gath
         {
             var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
             var autoStack = Config.Item("AutoStack").GetValue<bool>();
+            var count = 0;
+
+            foreach (var buffs in ObjectManager.Player.Buffs.Where(buffs => buffs.DisplayName == "Feast"))
+            {
+                count = buffs.Count;
+            }
 
             if (R.IsReady() && autoStack)
-            foreach (var minion in allMinions.Where(minion => minion.IsValidTarget(R.Range) && DamageLib.getDmg(minion, DamageLib.SpellType.R) > minion.Health))
+            foreach (var minion in allMinions.Where(minion => minion.IsValidTarget(R.Range) && DamageLib.getDmg(minion, DamageLib.SpellType.R) > minion.Health).Where(minion => count < 6))
                 R.CastOnUnit(minion);
 
             var autoQ1 = Config.Item("AutoQ1").GetValue<bool>();
             var autoQ2 = Config.Item("AutoQ2").GetValue<bool>();
 
-            if (!Q.IsReady() || (!autoQ1 && !autoQ2)) return;
             foreach (var champion in from champion in ObjectManager.Get<Obj_AI_Hero>() 
-            where Utility.IsValidTarget(champion, Q.Range) let QPrediction = Q.GetPrediction(champion) 
+            where champion.IsValidTarget(Q.Range) let QPrediction = Q.GetPrediction(champion) 
             where (QPrediction.HitChance == Prediction.HitChance.Immobile && autoQ1) ||(QPrediction.HitChance == Prediction.HitChance.Dashing && autoQ2) select champion)
                 Q.Cast(champion, true, true);
         }
@@ -138,10 +143,10 @@ namespace Cho_Gath
             var useW = Config.Item("UseWCombo").GetValue<bool>();
             var useR = Config.Item("UseRCombo").GetValue<bool>();
 
-            if (W.IsReady() && useQ && ObjectManager.Player.Distance(target) <= W.Range)
+            if (W.IsReady() && useW && ObjectManager.Player.Distance(target) <= W.Range)
                 W.Cast(target, false, true);
 
-            if (Q.IsReady() && useW && ObjectManager.Player.Distance(target) <= Q.Range)
+            if (Q.IsReady() && useQ && ObjectManager.Player.Distance(target) <= Q.Range)
                 Q.Cast(target, false, true);
 
             if (R.IsReady() && useR && DamageLib.getDmg(target, DamageLib.SpellType.R) > target.Health)
