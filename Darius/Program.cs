@@ -15,6 +15,10 @@ namespace Darius
         private static Spell Q, W, E, R;
         private static Menu Config;
 
+        public static SpellSlot IgniteSlot;
+        public static Items.Item HYDRA;
+        public static Items.Item TIAMAT;
+
 
         static void Main(string[] args)
         {
@@ -40,6 +44,10 @@ namespace Darius
                 SpellList.Add(E);
                 SpellList.Add(R);
 
+                IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
+                TIAMAT = new Items.Item(3077, 375);
+                HYDRA  = new Items.Item(3074, 375);
+
                 Config = new Menu("Darius", "Darius", true);
 
                 Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
@@ -50,8 +58,10 @@ namespace Darius
                 Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "Use W").SetValue(true));
                 Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "Use E").SetValue(true));
                 Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
+                Config.SubMenu("Combo").AddItem(new MenuItem("UseICombo", "Use Items").SetValue(true));
                 Config.SubMenu("Combo").AddItem(new MenuItem("Killsteal", "Killsteal").SetValue(true));
                 Config.SubMenu("Combo").AddItem(new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
+
 
                 Config.AddSubMenu(new Menu("Drawings", "Drawings"));
                 Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q range").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
@@ -93,26 +103,26 @@ namespace Darius
 
         private static void CastR(Obj_AI_Base target)
         {
-            if (!target.IsValidTarget(R.Range))
-                return;
-
-            foreach (
-                var buff in
-                    target.Buffs.Where(
-                        buff =>
-                            (buff.Name == "dariushemo" &&
-                            (DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage)*
-                            (1 + buff.Count/5) > target.Health + (target.FlatHPRegenMod/5)) ||
-                            DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) >
-                            target.Health + (target.FlatHPRegenMod/5))))
+            if (target.IsValidTarget(R.Range))
             {
-                R.Cast(target, true);
+                foreach (
+                    var buff in
+                        target.Buffs.Where(
+                            buff =>
+                                (buff.Name == "dariushemo" &&
+                                 (DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage)*
+                                  (1 + buff.Count/5) > target.Health + (target.FlatHPRegenMod/5)) ||
+                                 DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) >
+                                 target.Health + (target.FlatHPRegenMod/5))))
+                {
+                    R.Cast(target, true);
+                }
             }
         }
 
         private static void ExecuteSkills()
         {
-            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Magical);
+            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
             if (target == null) return;
 
             var useQ = Config.Item("UseQCombo").GetValue<bool>();
@@ -120,25 +130,45 @@ namespace Darius
             var useR = Config.Item("UseRCombo").GetValue<bool>();
 
             if (E.IsReady() && useE && ObjectManager.Player.Distance(target) <= E.Range)
-                E.Cast(target, true);
+                E.Cast(target.ServerPosition);
 
             if (Q.IsReady() && useQ && ObjectManager.Player.Distance(target) <= Q.Range)
                 Q.Cast();
 
             if (R.IsReady() && useR && ObjectManager.Player.Distance(target) <= R.Range)
                 CastR(target);
+
+            if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && DamageLib.getDmg(target, DamageLib.SpellType.IGNITE)
+            > target.Health)
+            {
+                ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
+            }
         }
 
         private static void ExecuteKillsteal()
         {
             foreach (var champion in ObjectManager.Get<Obj_AI_Hero>())
+            {
                 CastR(champion);
+
+                if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && DamageLib.getDmg(champion, DamageLib.SpellType.IGNITE)
+                > champion.Health && champion.Distance(ObjectManager.Player.ServerPosition) < 600)
+                {
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, champion);
+                }
+            }
         }
 
         static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
         {
             if (Config.Item("ComboActive").GetValue<KeyBind>().Active && Config.Item("UseWCombo").GetValue<bool>() && unit.IsMe && (target is Obj_AI_Hero))
                 W.Cast();
+
+            if (Config.Item("ComboActive").GetValue<KeyBind>().Active && Config.Item("UseICombo").GetValue<bool>() &&
+                unit.IsMe && (target is Obj_AI_Hero) && !W.IsReady())
+            {
+                Items.UseItem(Items.HasItem(3077) ? 3077 : 3074);
+            }
         }
     }
 }
