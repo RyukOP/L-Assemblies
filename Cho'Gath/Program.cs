@@ -27,54 +27,47 @@ namespace Cho_Gath
             if (ObjectManager.Player.BaseSkinName != ChampionName)
                 return;
 
-            try
-            {
-                Q = new Spell(SpellSlot.Q, 950);
-                W = new Spell(SpellSlot.W, 675);
-                R = new Spell(SpellSlot.R, 175);
+            Q = new Spell(SpellSlot.Q, 950);
+            W = new Spell(SpellSlot.W, 675);
+            R = new Spell(SpellSlot.R, 175);
 
-                Q.SetSkillshot(0.75f, 175f, 1000f, false, Prediction.SkillshotType.SkillshotCircle);
-                W.SetSkillshot(0.60f, 300f, 1750f, false, Prediction.SkillshotType.SkillshotCone);
+            Q.SetSkillshot(0.75f, 175f, 1000f, false, Prediction.SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.60f, 300f, 1750f, false, Prediction.SkillshotType.SkillshotCone);
 
-                SpellList.Add(Q);
-                SpellList.Add(W);
-                SpellList.Add(R);
+            SpellList.Add(Q);
+            SpellList.Add(W);
+            SpellList.Add(R);
 
-                Config = new Menu(ChampionName, ChampionName, true);
+            Config = new Menu(ChampionName, ChampionName, true);
 
-                Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-                Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+            Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
-                Config.AddSubMenu(new Menu("Combo", "Combo"));
-                Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "Use Q").SetValue(true));
-                Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "Use W").SetValue(true));
-                Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
-                Config.SubMenu("Combo").AddItem(new MenuItem("Killsteal", "Enable killsteal").SetValue(false));
-                Config.SubMenu("Combo")
-                    .AddItem(new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
+            Config.AddSubMenu(new Menu("Combo", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "Use Q").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "Use W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("Killsteal", "Enable killsteal").SetValue(false));
+            Config.SubMenu("Combo")
+                .AddItem(new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
 
-                Config.AddSubMenu(new Menu("AutoSpell", "AutoSpell"));
-                Config.SubMenu("AutoSpell").AddItem(new MenuItem("AutoQ1", "Auto-Q inmobile").SetValue(true));
-                Config.SubMenu("AutoSpell").AddItem(new MenuItem("AutoQ2", "Auto-Q dashing").SetValue(true));
+            Config.AddSubMenu(new Menu("AutoSpell", "AutoSpell"));
+            Config.SubMenu("AutoSpell").AddItem(new MenuItem("AutoQ1", "Auto-Q inmobile").SetValue(true));
+            Config.SubMenu("AutoSpell").AddItem(new MenuItem("AutoQ2", "Auto-Q dashing").SetValue(true));
 
-                Config.AddSubMenu(new Menu("Additonal", "Additonal"));
-                Config.SubMenu("Additonal").AddItem(new MenuItem("AutoStack", "Auto Stack ult").SetValue(true));
-                Config.SubMenu("Additonal").AddItem(new MenuItem("AutoInterrupt", "Interrupt spells").SetValue(true));
+            Config.AddSubMenu(new Menu("Additonal", "Additonal"));
+            Config.SubMenu("Additonal").AddItem(new MenuItem("AutoStack", "Auto Stack ult").SetValue(true));
+            Config.SubMenu("Additonal").AddItem(new MenuItem("AutoInterrupt", "Interrupt spells").SetValue(true));
 
-                Config.AddSubMenu(new Menu("Drawings", "Drawings"));
-                Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q range").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
-                Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
-                Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
-                Config.AddToMainMenu();
+            Config.AddSubMenu(new Menu("Drawings", "Drawings"));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("QRange", "Q range").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("WRange", "W range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("RRange", "R range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
+            Config.AddToMainMenu();
 
-                Drawing.OnDraw    += Drawing_OnDraw;
-                Game.OnGameUpdate += Game_OnGameUpdate;
-                Interrupter.OnPosibleToInterrupt += Interrupter_OnPosibleToInterrupt;
-            }
-            catch (Exception)
-            {
-                Game.PrintChat("Error found in Cho_Gath. Refused to load.");
-            }
+            Drawing.OnDraw    += Drawing_OnDraw;
+            Game.OnGameUpdate += Game_OnGameUpdate;
+            Interrupter.OnPosibleToInterrupt += Interrupter_OnPosibleToInterrupt;
         }
 
         private static void Drawing_OnDraw(EventArgs args)
