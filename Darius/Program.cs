@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -151,6 +152,33 @@ namespace Darius
             }
         }
 
+        private static void ExecuteHarass()
+        {
+            if (!_config.Item("UseQHarass").GetValue<bool>() || !_q.IsReady()) return;
+
+            var c =
+                (from hero in ObjectManager.Get<Obj_AI_Hero>()
+                    where hero.IsValidTarget()
+                    select ObjectManager.Player.Distance(hero)).Count(dist => dist > 270 && dist <= _q.Range);
+
+            if (c > 0)
+                _q.Cast();
+        }
+
+        private static void ExecuteKillsteal()
+        {
+            foreach (var champion in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                CastR(champion);
+                if (_r.IsReady()) continue;
+
+                if (IgniteSlot != SpellSlot.Unknown &&
+                    ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
+                    DamageLib.getDmg(champion, DamageLib.SpellType.IGNITE) - 5 > champion.Health)
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, champion);
+            }
+        }
+
         private static void ExecuteSkills()
         {
             var target = SimpleTs.GetTarget(_e.Range, SimpleTs.DamageType.Physical);
@@ -173,27 +201,6 @@ namespace Darius
                 ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
                 DamageLib.getDmg(target, DamageLib.SpellType.IGNITE) - 5 > target.Health)
                 ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
-        }
-
-        private static void ExecuteKillsteal()
-        {
-            foreach (var champion in ObjectManager.Get<Obj_AI_Hero>())
-            {
-                CastR(champion);
-                if (_r.IsReady()) continue;
-                if (IgniteSlot != SpellSlot.Unknown &&
-                    ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
-                    DamageLib.getDmg(champion, DamageLib.SpellType.IGNITE) - 5 > champion.Health)
-                    ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, champion);
-            }
-        }
-
-        private static void ExecuteHarass()
-        {
-            if (!_config.Item("UseQHarass").GetValue<bool>() || !_q.IsReady()) return;
-
-            if (Utility.CountEnemysInRange((int)_q.Range) > 0)
-                _q.Cast();
         }
     }
 }
