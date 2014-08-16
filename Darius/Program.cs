@@ -1,22 +1,26 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using LeagueSharp;
 using LeagueSharp.Common;
+
+#endregion
 
 namespace Darius
 {
     internal class Program
     {
         private const string ChampionName = "Darius";
-        private static Orbwalking.Orbwalker Orbwalker;
+        private static Orbwalking.Orbwalker _orbwalker;
         private static readonly List<Spell> SpellList = new List<Spell>();
-        private static Spell Q, W, E, R;
-        private static Menu Config;
+        private static Spell _q, _w, _e, _r;
+        private static Menu _config;
 
         public static SpellSlot IgniteSlot;
-        public static Items.Item HYDRA;
-        public static Items.Item TIAMAT;
+        public static Items.Item Hydra;
+        public static Items.Item Tiamat;
 
 
         private static void Main(string[] args)
@@ -26,64 +30,61 @@ namespace Darius
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            if (ObjectManager.Player.ChampionName != ChampionName)
-                return;
+            if (ObjectManager.Player.ChampionName != ChampionName) return;
 
-            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
+            _q = new Spell(SpellSlot.Q, 425);
+            _w = new Spell(SpellSlot.W, 145);
+            _e = new Spell(SpellSlot.E, 540);
+            _r = new Spell(SpellSlot.R, 460);
 
-            Q = new Spell(SpellSlot.Q, 425);
-            W = new Spell(SpellSlot.W, 145);
-            E = new Spell(SpellSlot.E, 540);
-            R = new Spell(SpellSlot.R, 460);
-
-            SpellList.Add(Q);
-            SpellList.Add(W);
-            SpellList.Add(E);
-            SpellList.Add(R);
+            SpellList.Add(_q);
+            SpellList.Add(_w);
+            SpellList.Add(_e);
+            SpellList.Add(_r);
 
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
-            TIAMAT = new Items.Item(3077, 375);
-            HYDRA = new Items.Item(3074, 375);
+            Tiamat = new Items.Item(3077, 375);
+            Hydra = new Items.Item(3074, 375);
 
-            Config = new Menu("Darius", "Darius", true);
+            _config = new Menu("Darius", "Darius", true);
 
-            Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+            _config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            _orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
 
-            Config.AddSubMenu(new Menu("Combo", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "Use Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "Use W").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "Use E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseICombo", "Use Items").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("Killsteal", "Killsteal").SetValue(true));
-            Config.SubMenu("Combo")
+            _config.AddSubMenu(new Menu("Combo", "Combo"));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseQCombo", "Use Q").SetValue(true));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseWCombo", "Use W").SetValue(true));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseECombo", "Use E").SetValue(true));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
+            _config.SubMenu("Combo").AddItem(new MenuItem("UseICombo", "Use Items").SetValue(true));
+            _config.SubMenu("Combo").AddItem(new MenuItem("Killsteal", "Killsteal").SetValue(true));
+            _config.SubMenu("Combo")
                 .AddItem(new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
 
-            Config.AddSubMenu(new Menu("Harass", "Harass"));
-            Config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "Use Q").SetValue(true));
-            Config.SubMenu("Harass")
+            _config.AddSubMenu(new Menu("Harass", "Harass"));
+            _config.SubMenu("Harass").AddItem(new MenuItem("UseQHarass", "Use Q").SetValue(true));
+            _config.SubMenu("Harass")
                 .AddItem(new MenuItem("HarassActive", "Harass!").SetValue(new KeyBind(88, KeyBindType.Press)));
-            Config.SubMenu("Harass")
-                            .AddItem(
-                                new MenuItem("HarassActiveT", "Harass (toggle)!").SetValue(new KeyBind("Y".ToCharArray()[0],
-                                    KeyBindType.Toggle)));
+            _config.SubMenu("Harass")
+                .AddItem(
+                    new MenuItem("HarassActiveT", "Harass (toggle)!").SetValue(new KeyBind("Y".ToCharArray()[0],
+                        KeyBindType.Toggle)));
 
-
-            Config.AddSubMenu(new Menu("Drawings", "Drawings"));
-            Config.SubMenu("Drawings")
+            _config.AddSubMenu(new Menu("Drawings", "Drawings"));
+            _config.SubMenu("Drawings")
                 .AddItem(
                     new MenuItem("QRange", "Q range").SetValue(new Circle(true, Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings")
+            _config.SubMenu("Drawings")
                 .AddItem(
                     new MenuItem("ERange", "E range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
-            Config.SubMenu("Drawings")
+            _config.SubMenu("Drawings")
                 .AddItem(
                     new MenuItem("RRange", "R range").SetValue(new Circle(false, Color.FromArgb(255, 255, 255, 255))));
-            Config.AddToMainMenu();
+            _config.AddToMainMenu();
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnGameUpdate += Game_OnGameUpdate;
+            Orbwalking.AfterAttack += Orbwalking_AfterAttack;
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -92,7 +93,7 @@ namespace Darius
 
             foreach (var spell in SpellList)
             {
-                var menuItem = Config.Item(spell.Slot + "Range").GetValue<Circle>();
+                var menuItem = _config.Item(spell.Slot + "Range").GetValue<Circle>();
 
                 if (menuItem.Active)
                     Utility.DrawCircle(ObjectManager.Player.Position, spell.Range, menuItem.Color);
@@ -101,20 +102,33 @@ namespace Darius
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            if (Config.Item("ComboActive").GetValue<KeyBind>().Active)
+            if (_config.Item("ComboActive").GetValue<KeyBind>().Active)
                 ExecuteSkills();
 
-            if (Config.Item("Killsteal").GetValue<bool>())
+            if (_config.Item("Killsteal").GetValue<bool>())
                 ExecuteKillsteal();
 
-            if ((Config.Item("HarassActive").GetValue<KeyBind>().Active) || (Config.Item("HarassActiveT").GetValue<KeyBind>().Active))
+            if ((_config.Item("HarassActive").GetValue<KeyBind>().Active) ||
+                (_config.Item("HarassActiveT").GetValue<KeyBind>().Active))
                 ExecuteHarass();
+        }
+
+        private static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
+        {
+            if (_config.Item("ComboActive").GetValue<KeyBind>().Active && _config.Item("UseWCombo").GetValue<bool>() &&
+                unit.IsMe && (target is Obj_AI_Hero))
+                _w.Cast();
+
+            if (_config.Item("ComboActive").GetValue<KeyBind>().Active && _config.Item("UseICombo").GetValue<bool>() &&
+                unit.IsMe && (target is Obj_AI_Hero) && !_w.IsReady())
+            {
+                Items.UseItem(Items.HasItem(3077) ? 3077 : 3074);
+            }
         }
 
         private static void CastR(Obj_AI_Base target)
         {
-            if (!target.IsValidTarget(R.Range) || !R.IsReady())
-                return;
+            if (!target.IsValidTarget(_r.Range) || !_r.IsReady()) return;
 
             if (!(DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) > target.Health))
             {
@@ -122,39 +136,39 @@ namespace Darius
                 {
                     if (buff.Name == "dariushemo")
                     {
-                        var Damage = DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) * (1 + buff.Count/5) - 15;
-                        if (Damage > target.Health)
+                        if (DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) *
+                            (1 + buff.Count / 5) - 1 > target.Health)
                         {
-                            R.CastOnUnit(target, true);
+                            _r.CastOnUnit(target, true);
                         }
                     }
                 }
             }
-            else if (DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) - 15 > target.Health)
+            else if (DamageLib.getDmg(target, DamageLib.SpellType.R, DamageLib.StageType.FirstDamage) - 15 >
+                     target.Health)
             {
-                R.CastOnUnit(target, true);
+                _r.CastOnUnit(target, true);
             }
         }
 
         private static void ExecuteSkills()
         {
-            var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Physical);
+            var target = SimpleTs.GetTarget(_e.Range, SimpleTs.DamageType.Physical);
             if (target == null) return;
 
-            var useQ = Config.Item("UseQCombo").GetValue<bool>();
-            var useE = Config.Item("UseECombo").GetValue<bool>();
-            var useR = Config.Item("UseRCombo").GetValue<bool>();
+            if (_e.IsReady() && _config.Item("UseECombo").GetValue<bool>() &&
+                ObjectManager.Player.Distance(target) <= _e.Range)
+                _e.Cast(target.ServerPosition);
 
-            if (E.IsReady() && useE && ObjectManager.Player.Distance(target) <= E.Range)
-                E.Cast(target.ServerPosition);
+            if (_q.IsReady() && _config.Item("UseQCombo").GetValue<bool>() &&
+                ObjectManager.Player.Distance(target) <= _q.Range)
+                _q.Cast();
 
-            if (Q.IsReady() && useQ && ObjectManager.Player.Distance(target) <= Q.Range)
-                Q.Cast();
-
-            if (R.IsReady() && useR && ObjectManager.Player.Distance(target) <= R.Range)
+            if (_r.IsReady() && _config.Item("UseRCombo").GetValue<bool>() &&
+                ObjectManager.Player.Distance(target) <= _r.Range)
                 CastR(target);
 
-            if (R.IsReady()) return;
+            if (_r.IsReady()) return;
             if (IgniteSlot != SpellSlot.Unknown &&
                 ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
                 DamageLib.getDmg(target, DamageLib.SpellType.IGNITE) - 5 > target.Health)
@@ -166,7 +180,7 @@ namespace Darius
             foreach (var champion in ObjectManager.Get<Obj_AI_Hero>())
             {
                 CastR(champion);
-                if (R.IsReady()) continue;
+                if (_r.IsReady()) continue;
                 if (IgniteSlot != SpellSlot.Unknown &&
                     ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
                     DamageLib.getDmg(champion, DamageLib.SpellType.IGNITE) - 5 > champion.Health)
@@ -176,28 +190,10 @@ namespace Darius
 
         private static void ExecuteHarass()
         {
-            var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Physical);
-            if (target == null) return;
+            if (!_config.Item("UseQHarass").GetValue<bool>() || !_q.IsReady()) return;
 
-            var useQ = Config.Item("UseQHarass").GetValue<bool>();
-            if (!useQ || !Q.IsReady())
-                return;
-
-            if (ObjectManager.Player.Distance(target) < Q.Range)
-                Q.Cast();
-        }
-
-        static void Orbwalking_AfterAttack(Obj_AI_Base unit, Obj_AI_Base target)
-        {
-            if (Config.Item("ComboActive").GetValue<KeyBind>().Active && Config.Item("UseWCombo").GetValue<bool>() &&
-                unit.IsMe && (target is Obj_AI_Hero))
-                W.Cast();
-
-            if (Config.Item("ComboActive").GetValue<KeyBind>().Active && Config.Item("UseICombo").GetValue<bool>() &&
-                unit.IsMe && (target is Obj_AI_Hero) && !W.IsReady())
-            {
-                Items.UseItem(Items.HasItem(3077) ? 3077 : 3074);
-            }
+            if (Utility.CountEnemysInRange((int)_q.Range) > 0)
+                _q.Cast();
         }
     }
 }
