@@ -144,30 +144,36 @@ namespace Katarina
             var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Magical);
             if (target == null) return;
 
-            if (ObjectManager.Player.Distance(target) < Q.Range && Q.IsReady() &&
-                DamageLib.getDmg(target, DamageLib.SpellType.Q, DamageLib.StageType.FirstDamage) - 20 > target.Health)
+            if (E.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.E}) &&
+                ObjectManager.Player.Distance(target) < E.Range)
+                E.CastOnUnit(target, true);
+
+            if (Q.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q}) &&
+                ObjectManager.Player.Distance(target) < Q.Range)
                 Q.CastOnUnit(target, true);
 
-            if (ObjectManager.Player.Distance(target) < E.Range && E.IsReady() &&
-                DamageLib.getDmg(target, DamageLib.SpellType.E) - 20 > target.Health)
-                E.CastOnUnit(target, true);
-
-            if (ObjectManager.Player.Distance(target) < W.Range && W.IsReady() &&
-                DamageLib.getDmg(target, DamageLib.SpellType.W) - 20 > target.Health)
+            if (W.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.W}) &&
+                ObjectManager.Player.Distance(target) < W.Range)
                 W.Cast();
 
-            if (ObjectManager.Player.Distance(target) < E.Range && E.IsReady() && W.IsReady() &&
-                DamageLib.getDmg(target, DamageLib.SpellType.E) + DamageLib.getDmg(target, DamageLib.SpellType.W) - 20 >
-                target.Health)
-            {
+            if (Q.IsReady() && E.IsReady() &&
+                DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.E}) &&
+                ObjectManager.Player.Distance(target) < E.Range)
+                Q.CastOnUnit(target, true);
                 E.CastOnUnit(target, true);
-                if (ObjectManager.Player.Distance(target) < W.Range)
-                {
-                    W.Cast();
-                }
-            }
 
-            if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready && ObjectManager.Player.Distance(target) < 600 && DamageLib.getDmg(target, DamageLib.SpellType.IGNITE) > target.Health)
+            if (Q.IsReady() && E.IsReady() && W.IsReady() &&
+                DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E}) &&
+                ObjectManager.Player.Distance(target) < E.Range)
+                Q.Cast(target);
+                E.Cast(target);
+                if (ObjectManager.Player.Distance(target) < W.Range)
+                    W.Cast();
+
+            if (IgniteSlot != SpellSlot.Unknown &&
+                ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
+                ObjectManager.Player.Distance(target) < 600 &&
+                DamageLib.IsKillable(target, new []{DamageLib.SpellType.IGNITE}))
                 ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
         }
 
@@ -246,7 +252,6 @@ namespace Katarina
                     W.Cast(minion);
             }
         }
-
         private static double GetDamage(Obj_AI_Base unit)
         {
             double damage = 0;
