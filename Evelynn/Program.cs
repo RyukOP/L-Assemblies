@@ -143,14 +143,11 @@ namespace Evelynn
             if (decodedPacket.SourceNetworkId != ObjectManager.Player.NetworkId || decodedPacket.Slot != SpellSlot.R)
                 return;
 
-            var counter =
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(
-                        hero =>
-                            hero.IsValidTarget() &&
-                            hero.Distance(new Vector2(decodedPacket.FromX, decodedPacket.FromY)) <= R.Range);
-
-            if (counter == 0)
+            if (ObjectManager.Get<Obj_AI_Hero>()
+                .Count(
+                    hero =>
+                        hero.IsValidTarget() &&
+                        hero.Distance(new Vector2(decodedPacket.ToX, decodedPacket.ToY)) <= R.Range) == 0)
                 args.Process = false;
         }
 
