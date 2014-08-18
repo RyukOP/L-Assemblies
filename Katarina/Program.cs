@@ -145,11 +145,11 @@ namespace Katarina
             if (target == null) return;
 
             if (E.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.E}) &&
-                ObjectManager.Player.Distance(target) < E.Range)
+                ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
                 E.CastOnUnit(target, true);
 
             if (Q.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q}) &&
-                ObjectManager.Player.Distance(target) < Q.Range)
+                ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
                 Q.CastOnUnit(target, true);
 
             if (W.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.W}) &&
@@ -158,13 +158,13 @@ namespace Katarina
 
             if (Q.IsReady() && E.IsReady() &&
                 DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.E}) &&
-                ObjectManager.Player.Distance(target) < E.Range)
+                ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
                 Q.CastOnUnit(target, true);
                 E.CastOnUnit(target, true);
 
             if (Q.IsReady() && E.IsReady() && W.IsReady() &&
                 DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E}) &&
-                ObjectManager.Player.Distance(target) < E.Range)
+                ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
                 Q.Cast(target);
                 E.Cast(target);
                 if (ObjectManager.Player.Distance(target) < W.Range)
@@ -184,19 +184,19 @@ namespace Katarina
 
             if ((GetDamage(target) > target.Health))
             {
-                if (ObjectManager.Player.Distance(target) < E.Range && DFG.IsReady())
+                if (DFG.IsReady() && ObjectManager.Player.Distance(target) < DFG.Range + target.BoundingRadius)
                     DFG.Cast(target);
 
-                if (ObjectManager.Player.Distance(target) < Q.Range && Q.IsReady())
+                if (Q.IsReady() && ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
                     Q.CastOnUnit(target, true);
 
-                if (ObjectManager.Player.Distance(target) < E.Range && E.IsReady())
+                if (E.IsReady() && ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
                     E.CastOnUnit(target, true);
 
-                if (ObjectManager.Player.Distance(target) < W.Range && W.IsReady())
+                if (W.IsReady() && ObjectManager.Player.Distance(target) < W.Range)
                     W.Cast();
 
-                if (ObjectManager.Player.Distance(target) < R.Range && R.IsReady())
+                if (R.IsReady() && ObjectManager.Player.Distance(target) < R.Range )
                     R.Cast();
 
                 if (IgniteSlot != SpellSlot.Unknown && ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
@@ -205,14 +205,14 @@ namespace Katarina
             }
             else if (!(GetDamage(target) > target.Health))
             {
-                if (ObjectManager.Player.Distance(target) < Q.Range && Q.IsReady())
+                if (Q.IsReady() && ObjectManager.Player.Distance(target) < Q.Range)
                     Q.CastOnUnit(target, true);
 
                 if (Config.Item("ComboActive").GetValue<KeyBind>().Active &&
-                    ObjectManager.Player.Distance(target) < E.Range && E.IsReady())
+                    E.IsReady() && ObjectManager.Player.Distance(target) < E.Range)
                     E.CastOnUnit(target, true);
 
-                if (ObjectManager.Player.Distance(target) < W.Range && W.IsReady())
+                if (W.IsReady() && ObjectManager.Player.Distance(target) < W.Range)
                     W.Cast();
             }
         }

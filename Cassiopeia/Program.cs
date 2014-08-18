@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
-using System.Runtime.Remoting.Services;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
@@ -17,6 +17,8 @@ namespace Cassio
         private static Spell E;
         private static Spell R;
         private static Menu Config;
+
+        private static SpellSlot IgniteSlot;
 
         private const string ChampionName = "Cassiopeia";
 
@@ -35,9 +37,15 @@ namespace Cassio
             E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 825);
 
-            Q.SetSkillshot(0.60f, 150f, int.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
-            W.SetSkillshot(0.60f, 300f, int.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
-            R.SetSkillshot(0.30f, 80f , int.MaxValue, false, Prediction.SkillshotType.SkillshotCone);
+            IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
+
+            const double ultAngle = 80*Math.PI/180;
+            const float fUltAngle = (float)ultAngle;
+            Game.PrintChat(fUltAngle.ToString());
+
+            Q.SetSkillshot(0.60f, 75f,  int.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.50f, 106f, 2500f, false, Prediction.SkillshotType.SkillshotCircle);
+            R.SetSkillshot(0.30f, fUltAngle, int.MaxValue, false, Prediction.SkillshotType.SkillshotCone);
 
             SpellList.Add(Q);
             SpellList.Add(W);
@@ -92,23 +100,27 @@ namespace Cassio
             
             Orbwalker.SetAttacks(false);
 
-            if (DamageLib.IsKillable(target,
+            if (Q.IsReady() && W.IsReady() && E.IsReady() && R.IsReady() && DamageLib.IsKillable(target,
                 new[]
                 {
                     DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E, DamageLib.SpellType.E,
                     DamageLib.SpellType.R, DamageLib.SpellType.R, DamageLib.SpellType.IGNITE
                 }))
             {
-                if (R.IsReady() && ObjectManager.Player.Distance(target) <= R.Range + R.Width)
+                if (IgniteSlot != SpellSlot.Unknown &&
+                    ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
+                    ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
+
+                if (ObjectManager.Player.Distance(target) <= R.Range + R.Width)
                     R.Cast(target, true, true);
 
-                if (W.IsReady() && ObjectManager.Player.Distance(target) <= W.Range + W.Width)
+                if (ObjectManager.Player.Distance(target) <= W.Range + W.Width)
                     W.Cast(target, true, true);
 
-                if (Q.IsReady() && ObjectManager.Player.Distance(target) <= Q.Range + Q.Width)
+                if (ObjectManager.Player.Distance(target) <= Q.Range + Q.Width)
                     Q.Cast(target, true, true);
 
-                if (E.IsReady() && ObjectManager.Player.Distance(target) <= E.Range + target.BoundingRadius && IsPoisoned(target) || DamageLib.IsKillable(target, new[] { DamageLib.SpellType.E }))
+                if (ObjectManager.Player.Distance(target) <= E.Range + target.BoundingRadius && IsPoisoned(target) || DamageLib.IsKillable(target, new[] { DamageLib.SpellType.E }))
                     E.CastOnUnit(target, true);
             }
             else
