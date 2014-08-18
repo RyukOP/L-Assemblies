@@ -165,17 +165,23 @@ namespace Katarina
                         Tuple.Create(DamageLib.SpellType.Q, DamageLib.StageType.FirstDamage),
                         Tuple.Create(DamageLib.SpellType.E, DamageLib.StageType.Default)
                     }) &&
-                ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
+                ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
+            {
                 Q.CastOnUnit(target, true);
                 E.CastOnUnit(target, true);
+            }
 
             if (Q.IsReady() && E.IsReady() && W.IsReady() &&
                 DamageLib.IsKillable(target, new[] {DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E}) &&
                 ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
+            {
                 Q.Cast(target);
                 E.Cast(target);
                 if (ObjectManager.Player.Distance(target) < W.Range)
+                {
                     W.Cast();
+                }
+            }
 
             if (IgniteSlot != SpellSlot.Unknown &&
                 ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
