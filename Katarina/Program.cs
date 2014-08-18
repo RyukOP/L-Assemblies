@@ -144,26 +144,33 @@ namespace Katarina
             var target = SimpleTs.GetTarget(E.Range, SimpleTs.DamageType.Magical);
             if (target == null) return;
 
-            if (E.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.E}) &&
+            if (E.IsReady() && DamageLib.IsKillable(target, new[] {DamageLib.SpellType.E}) &&
                 ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
                 E.CastOnUnit(target, true);
 
-            if (Q.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q}) &&
+            if (Q.IsReady() &&
+                DamageLib.IsKillable(target,
+                    new[] {Tuple.Create(DamageLib.SpellType.Q, DamageLib.StageType.FirstDamage)}) &&
                 ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
                 Q.CastOnUnit(target, true);
 
-            if (W.IsReady() && DamageLib.IsKillable(target, new []{DamageLib.SpellType.W}) &&
+            if (W.IsReady() && DamageLib.IsKillable(target, new[] {DamageLib.SpellType.W}) &&
                 ObjectManager.Player.Distance(target) < W.Range)
                 W.Cast();
 
             if (Q.IsReady() && E.IsReady() &&
-                DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.E}) &&
+                DamageLib.IsKillable(target,
+                    new[]
+                    {
+                        Tuple.Create(DamageLib.SpellType.Q, DamageLib.StageType.FirstDamage),
+                        Tuple.Create(DamageLib.SpellType.E, DamageLib.StageType.Default)
+                    }) &&
                 ObjectManager.Player.Distance(target) < E.Range + target.BoundingRadius)
                 Q.CastOnUnit(target, true);
                 E.CastOnUnit(target, true);
 
             if (Q.IsReady() && E.IsReady() && W.IsReady() &&
-                DamageLib.IsKillable(target, new []{DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E}) &&
+                DamageLib.IsKillable(target, new[] {DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E}) &&
                 ObjectManager.Player.Distance(target) < Q.Range + target.BoundingRadius)
                 Q.Cast(target);
                 E.Cast(target);
@@ -173,7 +180,7 @@ namespace Katarina
             if (IgniteSlot != SpellSlot.Unknown &&
                 ObjectManager.Player.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready &&
                 ObjectManager.Player.Distance(target) < 600 &&
-                DamageLib.IsKillable(target, new []{DamageLib.SpellType.IGNITE}))
+                DamageLib.IsKillable(target, new[] {DamageLib.SpellType.IGNITE}))
                 ObjectManager.Player.SummonerSpellbook.CastSpell(IgniteSlot, target);
         }
 
