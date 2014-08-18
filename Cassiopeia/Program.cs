@@ -41,7 +41,6 @@ namespace Cassio
 
             const double ultAngle = 80*Math.PI/180;
             const float fUltAngle = (float)ultAngle;
-            Game.PrintChat(fUltAngle.ToString());
 
             Q.SetSkillshot(0.60f, 75f,  int.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
             W.SetSkillshot(0.50f, 106f, 2500f, false, Prediction.SkillshotType.SkillshotCircle);
@@ -67,6 +66,13 @@ namespace Cassio
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnGameUpdate += Game_OnGameUpdate;
+            Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
+        }
+
+        static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if (Q.IsReady() || W.IsReady() || E.IsReady())
+                args.Process = false;
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -97,10 +103,8 @@ namespace Cassio
         {
             var target = SimpleTs.GetTarget(Q.Range, SimpleTs.DamageType.Magical);
             if (target == null) return;
-            
-            Orbwalker.SetAttacks(false);
-
-            if (Q.IsReady() && W.IsReady() && E.IsReady() && R.IsReady() && DamageLib.IsKillable(target,
+       
+            if (Q.IsReady(2000) && E.IsReady(2000) && R.IsReady() && DamageLib.IsKillable(target,
                 new[]
                 {
                     DamageLib.SpellType.Q, DamageLib.SpellType.W, DamageLib.SpellType.E, DamageLib.SpellType.E,
@@ -134,9 +138,6 @@ namespace Cassio
                 if (E.IsReady() && ObjectManager.Player.Distance(target) <= E.Range + target.BoundingRadius && IsPoisoned(target) || DamageLib.IsKillable(target, new []{DamageLib.SpellType.E}))
                     E.CastOnUnit(target, true);
             }
-
-            if (!Q.IsReady() && !W.IsReady() && !E.IsReady())
-                Orbwalker.SetAttacks(true);
         }
     }
 }
