@@ -21,7 +21,10 @@ namespace Draw_Range
         static void Drawing_OnDraw(EventArgs args)
         {
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(target => target.IsValidTarget(1000)))
-                Drawing.DrawCircle(target.Position, target.AttackRange, Color.Brown);
+            {
+                var dangerColor = ObjectManager.Player.Distance(target) < target.AttackRange + target.BoundingRadius ? Color.Red : Color.LimeGreen;
+                Drawing.DrawCircle(target.Position, target.AttackRange + target.BoundingRadius, dangerColor);
+            }
         }
     }
 }
