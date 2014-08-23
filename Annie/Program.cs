@@ -160,7 +160,7 @@ namespace Annie
             }
 
             var missile = (Obj_SpellMissile) sender;
-            if (!(missile.SpellCaster is Obj_AI_Hero) || !(missile.Target.Equals(ObjectManager.Player)))
+            if (!(missile.SpellCaster is Obj_AI_Hero) || !(missile.Target.IsMe))
             {
                 return;
             }
