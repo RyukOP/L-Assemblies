@@ -75,11 +75,11 @@ namespace Annie
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
             FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
 
-            Q = new Spell(SpellSlot.Q, 625);
-            W = new Spell(SpellSlot.W, 625);
-            E = new Spell(SpellSlot.E, 0);
-            R = new Spell(SpellSlot.R, 600);
-            R1 = new Spell(SpellSlot.R, 900);
+            Q = new Spell(SpellSlot.Q, 625f);
+            W = new Spell(SpellSlot.W, 625f);
+            E = new Spell(SpellSlot.E, float.MaxValue);
+            R = new Spell(SpellSlot.R, 600f);
+            R1 = new Spell(SpellSlot.R, 900f);
 
             W.SetSkillshot(0.60f, 625f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCone);
             R.SetSkillshot(0.20f, 200f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
@@ -167,7 +167,7 @@ namespace Annie
 
             if (E.IsReady())
             {
-                E.Cast(ObjectManager.Player);
+                E.Cast();
             }
             else if (!ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(missile.SpellCaster.NetworkId).IsMelee())
             {
@@ -177,7 +177,7 @@ namespace Annie
                     ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(missile.SpellCaster.NetworkId)
                         .BasicAttack.MissileSpeed * 1000 > ecd)
                 {
-                    Utility.DelayAction.Add(ecd, () => E.CastOnUnit(ObjectManager.Player));
+                    Utility.DelayAction.Add(ecd, () => E.Cast());
                 }
             }
         }
