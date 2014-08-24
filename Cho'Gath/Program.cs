@@ -31,8 +31,8 @@ namespace Cho_Gath
             W = new Spell(SpellSlot.W, 675);
             R = new Spell(SpellSlot.R, 175);
 
-            Q.SetSkillshot(0.75f, 175f, 1000f, false, Prediction.SkillshotType.SkillshotCircle);
-            W.SetSkillshot(0.60f, 300f, 1750f, false, Prediction.SkillshotType.SkillshotCone);
+            Q.SetSkillshot(0.75f, 175f, 1000f, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.60f, 300f, 1750f, false, SkillshotType.SkillshotCone);
 
             SpellList.Add(Q);
             SpellList.Add(W);
@@ -121,7 +121,7 @@ namespace Cho_Gath
 
             foreach (var champion in from champion in ObjectManager.Get<Obj_AI_Hero>() 
             where champion.IsValidTarget(Q.Range) let QPrediction = Q.GetPrediction(champion) 
-            where (QPrediction.HitChance == Prediction.HitChance.Immobile && autoQ1) ||(QPrediction.HitChance == Prediction.HitChance.Dashing && autoQ2) select champion)
+            where (QPrediction.Hitchance == HitChance.Immobile && autoQ1) ||(QPrediction.Hitchance == HitChance.Dashing && autoQ2) select champion)
                 Q.Cast(champion, true, true);
         }
 
@@ -154,11 +154,11 @@ namespace Cho_Gath
 
                 if (W.IsReady() && hero.Distance(ObjectManager.Player) <= W.Range &&
                     DamageLib.getDmg(hero, DamageLib.SpellType.W) > hero.Health)
-                    W.CastIfHitchanceEquals(hero, Prediction.HitChance.HighHitchance, true);
+                    W.CastIfHitchanceEquals(hero, HitChance.High, true);
 
                 if (Q.IsReady() && hero.Distance(ObjectManager.Player) <= Q.Range &&
                     DamageLib.getDmg(hero, DamageLib.SpellType.Q) > hero.Health)
-                    Q.CastIfHitchanceEquals(hero, Prediction.HitChance.HighHitchance, true);
+                    Q.CastIfHitchanceEquals(hero, HitChance.High, true);
             }
         }
     }
