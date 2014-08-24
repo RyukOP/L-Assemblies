@@ -44,9 +44,9 @@ namespace Cassio
             const double ultAngle = 80 * Math.PI / 180;
             const float fUltAngle = (float)ultAngle;
 
-            Q.SetSkillshot(0.60f, 75f, int.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
-            W.SetSkillshot(0.50f, 106f, 2500f, false, Prediction.SkillshotType.SkillshotCircle);
-            R.SetSkillshot(0.30f, fUltAngle, int.MaxValue, false, Prediction.SkillshotType.SkillshotCone);
+            Q.SetSkillshot(0.60f, 75f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.50f, 106f, 2500f, false, SkillshotType.SkillshotCircle);
+            R.SetSkillshot(0.30f, fUltAngle, int.MaxValue, false, SkillshotType.SkillshotCone);
 
             SpellList.Add(Q);
             SpellList.Add(W);
