@@ -45,7 +45,7 @@ namespace Evelynn
             E = new Spell(SpellSlot.E, 225f + 2 * 65f);
             R = new Spell(SpellSlot.R, 650f);
 
-            R.SetSkillshot(0.25f, 350f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
+            R.SetSkillshot(0.25f, 350f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             SpellList.Add(Q);
             SpellList.Add(W);
