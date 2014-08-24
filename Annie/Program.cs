@@ -81,9 +81,9 @@ namespace Annie
             R = new Spell(SpellSlot.R, 600f);
             R1 = new Spell(SpellSlot.R, 900f);
 
-            W.SetSkillshot(0.60f, 625f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCone);
-            R.SetSkillshot(0.20f, 200f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
-            R1.SetSkillshot(0.25f, 200f, float.MaxValue, false, Prediction.SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.60f, 625f, float.MaxValue, false, SkillshotType.SkillshotCone);
+            R.SetSkillshot(0.20f, 200f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            R1.SetSkillshot(0.25f, 200f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             SpellList.Add(Q);
             SpellList.Add(W);
@@ -159,7 +159,7 @@ namespace Annie
                 return;
             }
 
-            var missile = (Obj_SpellMissile) sender;
+            var missile = (Obj_SpellMissile)sender;
             if (!(missile.SpellCaster is Obj_AI_Hero) || !(missile.Target.IsMe))
             {
                 return;
@@ -171,9 +171,9 @@ namespace Annie
             }
             else if (!ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(missile.SpellCaster.NetworkId).IsMelee())
             {
-                var ecd = (int) (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).CooldownExpires - Game.Time) *
+                var ecd = (int)(ObjectManager.Player.Spellbook.GetSpell(SpellSlot.E).CooldownExpires - Game.Time) *
                           1000;
-                if ((int) Vector3.Distance(missile.Position, ObjectManager.Player.ServerPosition) /
+                if ((int)Vector3.Distance(missile.Position, ObjectManager.Player.ServerPosition) /
                     ObjectManager.GetUnitByNetworkId<Obj_AI_Base>(missile.SpellCaster.NetworkId)
                         .BasicAttack.MissileSpeed * 1000 > ecd)
                 {
@@ -230,7 +230,7 @@ namespace Annie
                         DoingCombo = Environment.TickCount;
                         Q.CastOnUnit(target, Config.Item("PCast").GetValue<bool>());
                         Utility.DelayAction.Add(
-                            (int) (ObjectManager.Player.Distance(target) / Q.Speed * 1000 - 100 - Game.Ping / 2.0),
+                            (int)(ObjectManager.Player.Distance(target) / Q.Speed * 1000 - 100 - Game.Ping / 2.0),
                             () =>
                             {
                                 if (R.IsReady() &&
