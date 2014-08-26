@@ -1,4 +1,4 @@
-﻿#region
+#region
 
 using System;
 using System.Collections.Generic;
@@ -87,8 +87,8 @@ namespace Tracker
             }
 
             return Texture.FromMemory(
-                Drawing.Direct3DDevice, (byte[]) new ImageConverter().ConvertTo(bitmap, typeof(byte[])), 12, 240, 0,
-                Usage.None, Format.A1, Pool.Default, Filter.Default, Filter.Default, 0);
+                Drawing.Direct3DDevice, (byte[])new ImageConverter().ConvertTo(bitmap, typeof(byte[])), 12, 240, 0,
+                Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
         }
 
         private static void Game_OnGameLoad(EventArgs args)
@@ -103,8 +103,8 @@ namespace Tracker
                 Sprite = new Sprite(Drawing.Direct3DDevice);
                 CdFrameTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
-                    (byte[]) new ImageConverter().ConvertTo(Properties.Resources.hud, typeof(byte[])), 147, 27, 0,
-                    Usage.None, Format.A1, Pool.Default, Filter.Default, Filter.Default, 0);
+                    (byte[])new ImageConverter().ConvertTo(Properties.Resources.hud, typeof(byte[])), 147, 27, 0,
+                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
 
                 ReadyLine = new Line(Drawing.Direct3DDevice) { Width = 2 };
 
@@ -120,16 +120,40 @@ namespace Tracker
             }
             catch (Exception e)
             {
-                Console.WriteLine(@"/ffs can't load the textures: " + e);
+                Console.WriteLine(@"/ff can't load the textures: " + e);
             }
 
+            Drawing.OnPreReset += DrawingOnOnPreReset;
+            Drawing.OnPostReset += DrawingOnOnPostReset;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            //Game.OnWndProc += Game_OnWndProc;
+            AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnDomainUnload;
+        }
+
+        private static void CurrentDomainOnDomainUnload(object sender, EventArgs eventArgs)
+        {
+            ReadyLine.Dispose();
+            Text.Dispose();
+            Sprite.Dispose();
+        }
+
+        private static void DrawingOnOnPostReset(EventArgs args)
+        {
+            ReadyLine.OnResetDevice();
+            Text.OnResetDevice();
+            Sprite.OnResetDevice();
+        }
+
+        private static void DrawingOnOnPreReset(EventArgs args)
+        {
+            ReadyLine.OnLostDevice();
+            Text.OnLostDevice();
+            Sprite.OnLostDevice();
         }
 
         private static void Game_OnWndProc(WndEventArgs args)
         {
-            if (args.Msg != (uint) WindowsMessages.WM_KEYDOWN)
+            if (args.Msg != (uint)WindowsMessages.WM_KEYDOWN)
             {
                 return;
             }
@@ -174,8 +198,8 @@ namespace Tracker
 
                     var indicator = new HpBarIndicator { Unit = hero };
 
-                    X = (int) indicator.Position.X;
-                    Y = (int) indicator.Position.Y;
+                    X = (int)indicator.Position.X;
+                    Y = (int)indicator.Position.Y;
 
                     var k = 0;
                     foreach (var sSlot in SummonerSpellSlots)
@@ -187,8 +211,8 @@ namespace Tracker
                         var t = spell.CooldownExpires - Game.Time;
 
                         var percent = (Math.Abs(spell.Cooldown) > float.Epsilon) ? t / spell.Cooldown : 1f;
-                        var n = (t > 0) ? (int) (19 * (1f - percent)) : 19;
-                        var ts = TimeSpan.FromSeconds((int) t);
+                        var n = (t > 0) ? (int)(19 * (1f - percent)) : 19;
+                        var ts = TimeSpan.FromSeconds((int)t);
                         var s = t > 60 ? string.Format("{0}:{1:D2}", ts.Minutes, ts.Seconds) : String.Format("{0:0}", t);
                         if (t > 0)
                         {
@@ -248,7 +272,7 @@ namespace Tracker
             }
             catch (Exception e)
             {
-                Console.WriteLine(@"/ffs can't draw sprites: " + e);
+                Console.WriteLine(@"/ff can't draw sprites: " + e);
             }
         }
 
