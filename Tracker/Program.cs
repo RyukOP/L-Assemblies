@@ -125,7 +125,7 @@ namespace Tracker
 
             Drawing.OnPreReset += DrawingOnOnPreReset;
             Drawing.OnPostReset += DrawingOnOnPostReset;
-            Drawing.OnEndScene += Drawing_OnEndScene;
+            Drawing.OnDraw += Drawing_OnEndScene;
             AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnDomainUnload;
         }
