@@ -192,7 +192,7 @@ namespace Tracker
 
                 foreach (var hero in
                     ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(hero => hero.IsValid && !hero.IsMe && hero.IsVisible && !hero.IsDead))
+                        .Where(hero => hero.IsValid && !hero.IsMe && hero.IsHPBarRendered))
                 {
                     Sprite.Begin();
 
