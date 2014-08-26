@@ -167,12 +167,15 @@ namespace Tracker
                 }
 
                 foreach (var hero in
-                    ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValid && hero.IsEnemy && hero.IsVisible && !hero.IsDead))
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(hero => hero.IsValid && !hero.IsMe && hero.IsVisible && !hero.IsDead))
                 {
                     Sprite.Begin();
 
-                    X = (int) hero.HPBarPosition.X - 9; // Offset -9
-                    Y = (int) hero.HPBarPosition.Y + 17; // Offset +17
+                    var indicator = new HpBarIndicator { Unit = hero };
+
+                    X = (int) indicator.Position.X;
+                    Y = (int) indicator.Position.Y;
 
                     var k = 0;
                     foreach (var sSlot in SummonerSpellSlots)
@@ -246,6 +249,29 @@ namespace Tracker
             catch (Exception e)
             {
                 Console.WriteLine(@"/ffs can't draw sprites: " + e);
+            }
+        }
+
+        internal class HpBarIndicator
+        {
+            internal Obj_AI_Hero Unit { get; set; }
+
+            private Vector2 Offset
+            {
+                get
+                {
+                    if (Unit != null)
+                    {
+                        return Unit.IsAlly ? new Vector2(-9, 14) : new Vector2(-9, 17);
+                    }
+
+                    return new Vector2();
+                }
+            }
+
+            internal Vector2 Position
+            {
+                get { return new Vector2(Unit.HPBarPosition.X + Offset.X, Unit.HPBarPosition.Y + Offset.Y); }
             }
         }
     }
