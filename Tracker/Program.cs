@@ -18,7 +18,7 @@ namespace Tracker
     {
         public static Sprite Sprite;
         public static Texture CdFrameTexture;
-        private static readonly Dictionary<string, Texture> SummonerTextures = new Dictionary<string, Texture>();
+        private static readonly Dictionary<string, Texture> SummonerTextures = new Dictionary<string, Texture>(StringComparer.InvariantCultureIgnoreCase);
         public static Line ReadyLine;
         public static Font Text;
 
