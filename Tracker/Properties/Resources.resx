@@ -160,4 +160,10 @@
   <data name="SummonerTeleport" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SummonerTeleport.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Minimap_Ward_Green_Enemy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Minimap_Ward_Green_Enemy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Minimap_Ward_Pink_Enemy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Minimap_Ward_Pink_Enemy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

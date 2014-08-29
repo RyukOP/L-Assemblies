@@ -73,6 +73,26 @@ namespace Tracker.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Minimap_Ward_Green_Enemy {
+            get {
+                object obj = ResourceManager.GetObject("Minimap_Ward_Green_Enemy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Minimap_Ward_Pink_Enemy {
+            get {
+                object obj = ResourceManager.GetObject("Minimap_Ward_Pink_Enemy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SummonerBarrier {
             get {
                 object obj = ResourceManager.GetObject("SummonerBarrier", resourceCulture);
