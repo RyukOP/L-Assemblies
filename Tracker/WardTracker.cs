@@ -450,7 +450,7 @@ namespace Tracker
                     var startT = Environment.TickCount - (int)((wardObject.MaxMana - wardObject.Mana) * 1000);
                     DetectedWards.RemoveAll(
                         w =>
-                            w.Position.Distance(wardObject.Position) < 200 && Math.Abs(w.StartT - startT) < 1000 &&
+                            w.Position.Distance(wardObject.Position) < 200 && (Math.Abs(w.StartT - startT) < 1000 || wardData.Type != WardType.Green) &&
                             w.Remove());
                     DetectedWards.Add(new DetectedWard(wardData, wardObject.Position, startT, wardObject));
                 }
